@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cortside.Common.Correlation" Version="1.0.155" />
+    <PackageReference Include="Cortside.Common.Hosting" Version="1.0.155" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cortside.WebApiStarter.Configuration\Cortside.WebApiStarter.Configuration.csproj" />
+  </ItemGroup>
+
+</Project>

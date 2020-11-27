@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-16"?><Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cortside.Common.BootStrap" Version="1.0.155" />
+    <PackageReference Include="Cortside.Common.DomainEvent" Version="1.0.155" />
+    <PackageReference Include="Cortside.Health" Version="1.0.14" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cortside.DomainEvent.Events\Cortside.DomainEvent.Events.csproj" />
+    <ProjectReference Include="..\Cortside.WebApiStarter.Configuration\Cortside.WebApiStarter.Configuration.csproj" />
+    <ProjectReference Include="..\Cortside.WebApiStarter.Data\Cortside.WebApiStarter.Data.csproj" />
+    <ProjectReference Include="..\Cortside.WebApiStarter.DomainEvent\Cortside.WebApiStarter.DomainEvent.csproj" />
+    <ProjectReference Include="..\Cortside.WebApiStarter.DomainService\Cortside.WebApiStarter.DomainService.csproj" />
+    <ProjectReference Include="..\Cortside.WebApiStarter.Health\Cortside.WebApiStarter.Health.csproj" />
+    <ProjectReference Include="..\Cortside.WebApiStarter.Hosting\Cortside.WebApiStarter.Hosting.csproj" />
+  </ItemGroup>
+
+</Project>
