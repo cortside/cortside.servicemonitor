@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cortside.WebApiStarter.Dto\Cortside.WebApiStarter.Dto.csproj" />
+    <ProjectReference Include="..\Cortside.DomainEvent.Events\Cortside.DomainEvent.Events.csproj" />
+  </ItemGroup>
+
+</Project>
