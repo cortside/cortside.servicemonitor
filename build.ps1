@@ -172,14 +172,14 @@ if ($suffix){
 }
 
 # copy generated build.json to needed applications
-cp .\src\build.json .\src\Cortside.ServiceMonitor.WebApi\build.json -force
+cp .\src\build.json .\src\Cortside.HealthMonitor.WebApi\build.json -force
 
 # build
-$args = "clean $PSScriptRoot\src\Cortside.ServiceMonitor.sln"
+$args = "clean $PSScriptRoot\src\Cortside.HealthMonitor.sln"
 Invoke-Exe -cmd dotnet -args $args
-$args = "restore $PSScriptRoot\src\Cortside.ServiceMonitor.sln --packages $PSScriptRoot\src\packages"
+$args = "restore $PSScriptRoot\src\Cortside.HealthMonitor.sln --packages $PSScriptRoot\src\packages"
 Invoke-Exe -cmd dotnet -args $args
-$args = "build $PSScriptRoot\src\Cortside.ServiceMonitor.sln --no-restore --configuration $msbuildconfig /p:Version=$BuildNumber"
+$args = "build $PSScriptRoot\src\Cortside.HealthMonitor.sln --no-restore --configuration $msbuildconfig /p:Version=$BuildNumber"
 Invoke-Exe -cmd dotnet -args $args
-$args = "publish $PSScriptRoot\src\Cortside.ServiceMonitor.WebApi\Cortside.ServiceMonitor.WebApi.csproj --no-restore /p:Version=$BuildNumber"
+$args = "publish $PSScriptRoot\src\Cortside.HealthMonitor.WebApi\Cortside.HealthMonitor.WebApi.csproj --no-restore /p:Version=$BuildNumber"
 Invoke-Exe -cmd dotnet -args $args
