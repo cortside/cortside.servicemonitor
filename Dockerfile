@@ -11,7 +11,7 @@ ENV configpath /app/appsettings.json
 #RUN update-ca-certificates
 
 COPY startup.sh /
-RUN chmod a+x /startup.sh
+#RUN chmod a+x /startup.sh
 
 WORKDIR /app
 COPY publish/ /app
