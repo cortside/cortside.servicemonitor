@@ -20,7 +20,7 @@ environment:
     secure: ATrglohIlg/NHRCeHMytmg==
 
 install:
-  - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
+  - ps: $env:DOCKER_PASS | docker login --username $env:DOCKER_USER --password-stdin
   - docker version
 
 init:
