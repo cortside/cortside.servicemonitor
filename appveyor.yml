@@ -1,6 +1,8 @@
 ## https://www.appveyor.com/docs/appveyor-yml/
 
-image: Visual Studio 2019
+image:
+- Visual Studio 2019
+- Ubuntu
 
 services:
 - docker
