@@ -1,0 +1,90 @@
+## https://www.appveyor.com/docs/appveyor-yml/
+
+image: Visual Studio 2019
+
+services:
+- docker
+
+version: 1.0.{build}
+
+configuration:
+- Debug
+
+platform: Any CPU
+
+environment:
+  # Don't report back to the mothership
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOCKER_USER: corts
+  DOCKER_PASS:
+    secure: ATrglohIlg/NHRCeHMytmg==
+
+install:
+  - ps: docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASS"
+  - docker version
+
+init:
+- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+
+assembly_info:
+  patch: true
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
+before_build:
+- appveyor-retry dotnet restore src/Cortside.HealthMonitor.sln -v Minimal
+- set DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%
+- dotnet --info
+
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
+  verbosity: minimal
+
+build_script:
+- dotnet build src/Cortside.HealthMonitor.sln --configuration %Configuration% /property:Version=%APPVEYOR_BUILD_VERSION%
+
+after_build:
+- ps: >-
+    #$branch = $ENV:APPVEYOR_REPO_BRANCH;
+    #$fileVersion = $env:APPVEYOR_BUILD_VERSION;
+    #if($branch -ne 'master') {
+    #    $fileVersion = "${fileVersion}-${branch}"; 
+    #}
+    
+    #dotnet pack src/cortside.common.sln --configuration $env:configuration -o ((get-location).Path + '\artifacts') /property:Version=$fileVersion 
+    
+    #gci -include *.nuspec -Recurse | %{ 
+    #    $csproj = ($_.Fullname).Replace('.nuspec','.csproj')
+    #    if((Test-Path -path $_.Fullname) -and (Test-Path -path $csproj )) { 
+    #        dotnet pack $csproj --configuration $env:configuration -o ((get-location).Path + '\artifacts') /property:Version=$fileVersion 
+    #    }
+    #}
+    
+artifacts:
+- path: artifacts\**\*.*
+
+cache:
+- '%USERPROFILE%\.nuget\packages'
+  
+nuget:
+  disable_publish_on_pr: true
+#  account_feed: true
+#  project_feed: true
+  
+test:
+  assemblies:
+    - '**\test\Cortside.Common.Test.ApplicationService.dll'
+    - '**\test\Cortside.Common.Test.Domain.dll'
+    - '**\test\Cortside.Common.Test.DomainService.dll'
+    - '**\test\Cortside.Common.Test.Web.CustomerSite.dll'
+    - '**\test\Cortside.Common.Test.DTOAssembler.dll'
+    - '**\test\Cortside.Common.Test.Web.MerchantSite.dll'
+    - '**\test\Cortside.Common.Test.Web.Common.dll'
+
+deploy:
+- provider: NuGet
+  api_key:
+    secure: w5Ze2msHkcTFwH4T9Etikd0pXBy6vjtkwCTbvmlG3yNTuSkiKgsapR0mwxD1+f1v
