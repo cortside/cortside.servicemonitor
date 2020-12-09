@@ -1,5 +1,4 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Reflection;
 using AutoMapper;
@@ -8,7 +7,6 @@ using Cortside.Common.Correlation;
 using Cortside.Common.Json;
 using Cortside.Health.Controllers;
 using Cortside.HealthMonitor.BootStrap;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
