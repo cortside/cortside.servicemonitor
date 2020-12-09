@@ -11,6 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Cortside.HealthMonitor.BootStrap.Installer {
     public class HealthInstaller : IInstaller {
@@ -20,11 +21,13 @@ namespace Cortside.HealthMonitor.BootStrap.Installer {
             string instrumentationKey = configuration["ApplicationInsights:InstrumentationKey"];
             string endpointAddress = configuration["ApplicationInsights:EndpointAddress"];
             if (!string.IsNullOrEmpty(instrumentationKey) && !string.IsNullOrEmpty(endpointAddress)) {
+                Log.Logger.Information("found instrumentation key, registering ApplicationInsightsRecorder");
                 TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration(instrumentationKey, new InMemoryChannel { EndpointAddress = endpointAddress });
                 TelemetryClient telemetryClient = new TelemetryClient(telemetryConfiguration);
                 services.AddSingleton(telemetryClient);
                 services.AddTransient<IAvailabilityRecorder, ApplicationInsightsRecorder>();
             } else {
+                Log.Logger.Information("no instrumentation key found, registering NullRecorder");
                 services.AddTransient<IAvailabilityRecorder, NullRecorder>();
             }
 
