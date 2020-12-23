@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cortside.Common.Correlation" Version="1.0.155" />
-    <PackageReference Include="Cortside.Health" Version="1.0.14" />
+    <PackageReference Include="Cortside.Health" Version="1.0.19-develop" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />

@@ -15,14 +15,17 @@ namespace Cortside.HealthMonitor.Health {
         public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder) : base(cache, logger, recorder) { }
 
         public override async Task<ServiceStatusModel> ExecuteAsync() {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var swtotal = new Stopwatch();
+            swtotal.Start();
 
             var client = new RestClient();
             var request = new RestRequest(check.Value, Method.GET);
             request.Timeout = (int)TimeSpan.FromSeconds(check.Timeout).TotalMilliseconds;
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var response = await client.ExecuteTaskAsync(request);
+            stopwatch.Stop();
 
             var key = "health::" + check.Name;
             CachedHealthModel model = cache.Get(key) as CachedHealthModel;
@@ -30,7 +33,6 @@ namespace Cortside.HealthMonitor.Health {
                 model = new CachedHealthModel() { Availability = new Availability() };
             }
 
-            stopwatch.Stop();
 
             model.Healthy = response.IsSuccessful;
             model.Status = response.IsSuccessful ? ServiceStatus.Ok : ServiceStatus.Failure;
@@ -39,13 +41,23 @@ namespace Cortside.HealthMonitor.Health {
             model.Required = check.Required;
             model.Availability.UpdateStatistics(model.Healthy, stopwatch.ElapsedMilliseconds);
 
+            var swread = new Stopwatch();
+            swread.Start();
             try {
-                model.Data = JsonConvert.DeserializeObject<HealthModel>(response.Content);
+                var body = response.Content.Replace(Environment.NewLine, "");
+                model.Data = JsonConvert.DeserializeObject<HealthModel>(body);
             } catch {
                 model.Content = response.Content;
             }
+            swread.Stop();
 
             cache.Set(key, model, DateTimeOffset.Now.AddSeconds(check.CacheDuration));
+
+            swtotal.Stop();
+            if (swtotal.ElapsedMilliseconds > request.Timeout) {
+                logger.LogWarning($"Excution took {swtotal.ElapsedMilliseconds}ms with {stopwatch.ElapsedMilliseconds}ms in request time, {swread.ElapsedMilliseconds}ms in response read and deserialization leaving {swtotal.ElapsedMilliseconds - swread.ElapsedMilliseconds - stopwatch.ElapsedMilliseconds}ms in everything else");
+            }
+
             return model;
         }
     }
