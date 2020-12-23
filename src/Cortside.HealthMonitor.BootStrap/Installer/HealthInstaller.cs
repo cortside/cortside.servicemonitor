@@ -38,7 +38,6 @@ namespace Cortside.HealthMonitor.BootStrap.Installer {
             // checks
             services.AddTransient<UrlCheck>();
             services.AddTransient<DbContextCheck>();
-            services.AddTransient<ExampleCheck>();
             services.AddTransient<CachingHealthCheck>();
 
             // check factory and hosted service
@@ -49,7 +48,6 @@ namespace Cortside.HealthMonitor.BootStrap.Installer {
                 var configuration = sp.GetService<IConfiguration>();
 
                 var factory = new CheckFactory(cache, logger, recorder, sp, configuration);
-                factory.RegisterCheck("example", typeof(ExampleCheck));
                 factory.RegisterCheck("caching", typeof(CachingHealthCheck));
                 return factory as ICheckFactory;
             });
