@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/core/runtime:3.1-alpine AS runtime
 ENV configpath /app/appsettings.json
 
-RUN apk update && apk add jq bash 
-RUN apk add ca-certificates && rm -rf /var/cache/apk/*
+#RUN apk update && apk add jq bash 
+#RUN apk add ca-certificates && rm -rf /var/cache/apk/*
 
 #COPY ./deploy/sh/startup.sh /startup.sh
 #COPY ./deploy/sh/transform.sh /usr/bin/transform.sh
