@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using AutoMapper;
 using Cortside.Common.BootStrap;
 using Cortside.Common.Correlation;
 using Cortside.Common.Json;
@@ -23,8 +22,8 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using RestSharp;
 using Serilog;
-
 
 namespace Cortside.HealthMonitor.WebApi {
     /// <summary>
@@ -52,6 +51,13 @@ namespace Cortside.HealthMonitor.WebApi {
         /// </summary>
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services) {
+            services.AddSingleton<ITelemetryInitializer, AppInsightsInitializer>();
+            services.AddApplicationInsightsTelemetry(o => {
+                o.InstrumentationKey = Configuration["ApplicationInsights:InstrumentationKey"];
+                o.EnableAdaptiveSampling = false;
+                o.EnableActiveTelemetryConfigurationSetup = true;
+            });
+
             services.AddResponseCaching();
             services.AddResponseCompression(options => {
                 options.Providers.Add<GzipCompressionProvider>();
@@ -60,16 +66,11 @@ namespace Cortside.HealthMonitor.WebApi {
             services.AddMemoryCache();
             services.AddCors();
 
-            IsoDateTimeConverter isoConverter = new IsoDateTimeConverter {
-                DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
-            };
-
             IsoTimeSpanConverter isoTimeSpanConverter = new IsoTimeSpanConverter();
 
             JsonConvert.DefaultSettings = () => {
                 var settings = new JsonSerializerSettings();
                 settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
-                settings.Converters.Add(isoConverter);
                 settings.Converters.Add(isoTimeSpanConverter);
                 return settings;
             };
@@ -86,7 +87,6 @@ namespace Cortside.HealthMonitor.WebApi {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
                     options.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
-                    options.SerializerSettings.Converters.Add(isoConverter);
                     options.SerializerSettings.Converters.Add(isoTimeSpanConverter);
                 })
                 .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(HealthController).Assembly));
@@ -94,6 +94,8 @@ namespace Cortside.HealthMonitor.WebApi {
             services.AddRouting(options => {
                 options.LowercaseUrls = true;
             });
+
+            services.AddSingleton<IRestClient, RestClient>();
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped(sp => {
@@ -111,9 +113,6 @@ namespace Cortside.HealthMonitor.WebApi {
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-
-            services.AddSingleton<ITelemetryInitializer, AppInsightsInitializer>();
-            services.AddApplicationInsightsTelemetry();
 
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddPolicyServerRuntimeClient(Configuration.GetSection("PolicyServer"))
