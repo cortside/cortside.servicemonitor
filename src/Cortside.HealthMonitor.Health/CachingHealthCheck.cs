@@ -12,13 +12,13 @@ using RestSharp;
 
 namespace Cortside.HealthMonitor.Health {
     public class CachingHealthCheck : Check {
-        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder) : base(cache, logger, recorder) { }
+        private readonly IRestClient client;
+
+        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder, IRestClient client) : base(cache, logger, recorder) {
+            this.client = client;
+        }
 
         public override async Task<ServiceStatusModel> ExecuteAsync() {
-            var swtotal = new Stopwatch();
-            swtotal.Start();
-
-            var client = new RestClient();
             var request = new RestRequest(check.Value, Method.GET);
             request.Timeout = (int)TimeSpan.FromSeconds(check.Timeout).TotalMilliseconds;
 
@@ -33,7 +33,6 @@ namespace Cortside.HealthMonitor.Health {
                 model = new CachedHealthModel() { Availability = new Availability() };
             }
 
-
             model.Healthy = response.IsSuccessful;
             model.Status = response.IsSuccessful ? ServiceStatus.Ok : ServiceStatus.Failure;
             model.StatusDetail = response.IsSuccessful ? "Successful" : response.ErrorMessage;
@@ -41,23 +40,15 @@ namespace Cortside.HealthMonitor.Health {
             model.Required = check.Required;
             model.Availability.UpdateStatistics(model.Healthy, stopwatch.ElapsedMilliseconds);
 
-            var swread = new Stopwatch();
-            swread.Start();
+            var body = response.Content.Replace(Environment.NewLine, "");
             try {
-                var body = response.Content.Replace(Environment.NewLine, "");
                 model.Data = JsonConvert.DeserializeObject<HealthModel>(body);
-            } catch {
+            } catch (Exception ex) {
                 model.Content = response.Content;
+                model.StatusDetail = ex.Message;
             }
-            swread.Stop();
 
             cache.Set(key, model, DateTimeOffset.Now.AddSeconds(check.CacheDuration));
-
-            swtotal.Stop();
-            if (swtotal.ElapsedMilliseconds > request.Timeout) {
-                logger.LogWarning($"Excution took {swtotal.ElapsedMilliseconds}ms with {stopwatch.ElapsedMilliseconds}ms in request time, {swread.ElapsedMilliseconds}ms in response read and deserialization leaving {swtotal.ElapsedMilliseconds - swread.ElapsedMilliseconds - stopwatch.ElapsedMilliseconds}ms in everything else");
-            }
-
             return model;
         }
     }

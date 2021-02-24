@@ -77,5 +77,13 @@ namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers {
         public Task SendAsync(string eventType, string address, string data, string correlationId, string messageId) {
             throw new NotImplementedException();
         }
+
+        public Task ScheduleMessageAsync<T>(T @event, string correlationId, string messageId, DateTime scheduledEnqueueTimeUtc) where T : class {
+            throw new NotImplementedException();
+        }
+
+        public Task ScheduleMessageAsync(string data, string eventType, string address, string correlationId, string messageId, DateTime scheduledEnqueueTimeUtc) {
+            throw new NotImplementedException();
+        }
     }
 }
