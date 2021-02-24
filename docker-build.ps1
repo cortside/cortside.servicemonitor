@@ -1,4 +1,4 @@
-$version = "1.0.4"
+$version = "1.0.5"
 
 ./clean.ps1
 dotnet publish -r alpine-x64 -c Debug -o publish .\src\Cortside.HealthMonitor.WebApi\Cortside.HealthMonitor.WebApi.csproj
