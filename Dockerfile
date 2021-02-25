@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/runtime:3.1-alpine AS runtime
 ENV configpath /app/appsettings.json
 
-#RUN apk update && apk add jq bash 
+RUN apk update && apk add jq bash 
 #RUN apk add ca-certificates && rm -rf /var/cache/apk/*
 
 #COPY ./deploy/sh/startup.sh /startup.sh
@@ -13,6 +13,7 @@ ENV configpath /app/appsettings.json
 #RUN update-ca-certificates
 
 COPY startup.sh /
+RUN dos2unix /startup.sh
 RUN chmod a+x /startup.sh
 
 WORKDIR /app
