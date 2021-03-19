@@ -81,6 +81,7 @@ namespace Cortside.HealthMonitor.WebApi {
                     builder.AddConfiguration(configuration);
                 })
                 .ConfigureWebHostDefaults(webBuilder => {
+                    webBuilder.UseShutdownTimeout(TimeSpan.FromSeconds(10));
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseSerilog();
                     webBuilder.UseKestrel();
