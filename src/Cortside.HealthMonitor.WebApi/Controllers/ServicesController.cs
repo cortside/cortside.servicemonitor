@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
+using Cortside.Health;
+using Cortside.Health.Models;
 using Cortside.HealthMonitor.Health;
 using Cortside.HealthMonitor.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +21,15 @@ namespace Cortside.HealthMonitor.WebApi.Controllers {
     public class ServicesController : Controller {
         private readonly ILogger logger;
         private readonly IMemoryCache cache;
+        private readonly HealthCheckServiceConfiguration config;
 
         /// <summary>
         /// Initializes a new instance of the HealthMonitorController
         /// </summary>
-        public ServicesController(ILogger<ServicesController> logger, IMemoryCache cache) {
+        public ServicesController(ILogger<ServicesController> logger, IMemoryCache cache, HealthCheckServiceConfiguration config) {
             this.logger = logger;
             this.cache = cache;
+            this.config = config;
         }
 
         /// <summary>
@@ -51,19 +55,27 @@ namespace Cortside.HealthMonitor.WebApi.Controllers {
         /// get status for all services
         /// </summary>
         [HttpGet("{service}")]
-        [ProducesResponseType(typeof(CachedHealthModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(HealthModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public IActionResult Get(string service) {
-            var result = cache.Get("health::" + service) as CachedHealthModel;
-
-            if (result != null) {
-                if (result.Data != null) {
-                    return Ok(result.Data);
-                } else {
-                    return Ok(result);
+            if (service == config.Name) {
+                HealthModel result = cache.Get(config.Name) as HealthModel;
+                if (result == null) {
+                    return NotFound();
                 }
+                return Ok(result);
             } else {
-                return NotFound();
+                var result = cache.Get("health::" + service) as CachedHealthModel;
+
+                if (result != null) {
+                    if (result.Data != null) {
+                        return Ok(result.Data);
+                    } else {
+                        return Ok(result);
+                    }
+                } else {
+                    return NotFound();
+                }
             }
         }
     }

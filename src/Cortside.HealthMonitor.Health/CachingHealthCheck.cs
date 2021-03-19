@@ -12,25 +12,26 @@ using RestSharp;
 
 namespace Cortside.HealthMonitor.Health {
     public class CachingHealthCheck : Check {
-        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder) : base(cache, logger, recorder) { }
+        private readonly IRestClient client;
+
+        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder, IRestClient client) : base(cache, logger, recorder) {
+            this.client = client;
+        }
 
         public override async Task<ServiceStatusModel> ExecuteAsync() {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            var client = new RestClient();
             var request = new RestRequest(check.Value, Method.GET);
             request.Timeout = (int)TimeSpan.FromSeconds(check.Timeout).TotalMilliseconds;
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var response = await client.ExecuteTaskAsync(request);
+            stopwatch.Stop();
 
             var key = "health::" + check.Name;
             CachedHealthModel model = cache.Get(key) as CachedHealthModel;
             if (model == null) {
                 model = new CachedHealthModel() { Availability = new Availability() };
             }
-
-            stopwatch.Stop();
 
             model.Healthy = response.IsSuccessful;
             model.Status = response.IsSuccessful ? ServiceStatus.Ok : ServiceStatus.Failure;
@@ -39,10 +40,12 @@ namespace Cortside.HealthMonitor.Health {
             model.Required = check.Required;
             model.Availability.UpdateStatistics(model.Healthy, stopwatch.ElapsedMilliseconds);
 
+            var body = response.Content.Replace(Environment.NewLine, "");
             try {
-                model.Data = JsonConvert.DeserializeObject<HealthModel>(response.Content);
-            } catch {
+                model.Data = JsonConvert.DeserializeObject<HealthModel>(body);
+            } catch (Exception ex) {
                 model.Content = response.Content;
+                model.StatusDetail = ex.Message;
             }
 
             cache.Set(key, model, DateTimeOffset.Now.AddSeconds(check.CacheDuration));
