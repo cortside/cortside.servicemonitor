@@ -50,7 +50,7 @@ build:
 build_script:
 - dotnet build src/Cortside.HealthMonitor.sln --configuration %Configuration% /property:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet publish -r alpine-x64 -c Debug -o publish .\src\Cortside.HealthMonitor.WebApi\Cortside.HealthMonitor.WebApi.csproj
-- docker build -t cortside/healthmonitor:1.0 .
+#- docker build -t cortside/healthmonitor:1.0 .
 #- docker push cortside/healthmonitor:1.0
 
 after_build:
