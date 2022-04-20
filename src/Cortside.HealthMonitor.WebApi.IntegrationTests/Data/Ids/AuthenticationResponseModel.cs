@@ -2,7 +2,6 @@ using Newtonsoft.Json;
 
 namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Data.Ids {
     public class AuthenticationResponseModel {
-
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
         [JsonProperty("expires_in")]

@@ -11,7 +11,6 @@ namespace Cortside.HealthMonitor.WebApi {
     /// Program
     /// </summary>
     public static class Program {
-
         /// <summary>
         /// Running environment
         /// </summary>

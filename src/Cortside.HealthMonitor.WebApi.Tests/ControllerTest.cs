@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cortside.HealthMonitor.WebApi.Tests {
     public abstract class ControllerTest<T> : IDisposable where T : ControllerBase {
-
         protected T controller;
         protected UnitTestFixture testFixture;
 

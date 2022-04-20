@@ -6,7 +6,6 @@ using System.Reflection;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Cortside.HealthMonitor.WebApi {
-
     /// <summary>
     /// MemoryCache extensions
     /// </summary>

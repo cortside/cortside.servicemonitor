@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:3.1-alpine AS runtime
+FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine AS runtime
 ENV configpath /app/appsettings.json
 
 RUN apk update && apk add jq bash 
