@@ -19,8 +19,9 @@ namespace Cortside.HealthMonitor.Health {
         }
 
         public override async Task<ServiceStatusModel> ExecuteAsync() {
-            var request = new RestRequest(check.Value, Method.GET);
-            request.Timeout = (int)TimeSpan.FromSeconds(check.Timeout).TotalMilliseconds;
+            var request = new RestRequest(check.Value, Method.GET) {
+                Timeout = (int)TimeSpan.FromSeconds(check.Timeout).TotalMilliseconds
+            };
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -28,8 +29,7 @@ namespace Cortside.HealthMonitor.Health {
             stopwatch.Stop();
 
             var key = "health::" + check.Name;
-            CachedHealthModel model = cache.Get(key) as CachedHealthModel;
-            if (model == null) {
+            if (!(cache.Get(key) is CachedHealthModel model)) {
                 model = new CachedHealthModel() { Availability = new Availability() };
             }
 
