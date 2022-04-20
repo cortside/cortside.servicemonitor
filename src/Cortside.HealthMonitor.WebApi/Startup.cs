@@ -95,7 +95,7 @@ namespace Cortside.HealthMonitor.WebApi {
                 options.LowercaseUrls = true;
             });
 
-            services.AddSingleton<IRestClient, RestClient>();
+            services.AddSingleton<RestClient, RestClient>();
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped(sp => {
@@ -132,7 +132,7 @@ namespace Cortside.HealthMonitor.WebApi {
 
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                var s = "/swagger/v1/swagger.json";
+                const string s = "/swagger/v1/swagger.json";
                 c.SwaggerEndpoint(s, "HealthMonitor Api V1");
             });
 
