@@ -12,24 +12,24 @@ using RestSharp;
 
 namespace Cortside.HealthMonitor.Health {
     public class CachingHealthCheck : Check {
-        private readonly IRestClient client;
+        private readonly RestClient client;
 
-        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder, IRestClient client) : base(cache, logger, recorder) {
+        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder, RestClient client) : base(cache, logger, recorder) {
             this.client = client;
         }
 
         public override async Task<ServiceStatusModel> ExecuteAsync() {
-            var request = new RestRequest(check.Value, Method.GET) {
+            var request = new RestRequest(check.Value, Method.Get) {
                 Timeout = (int)TimeSpan.FromSeconds(check.Timeout).TotalMilliseconds
             };
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var response = await client.ExecuteTaskAsync(request);
+            var response = await client.ExecuteAsync(request);
             stopwatch.Stop();
 
             var key = "health::" + check.Name;
-            if (!(cache.Get(key) is CachedHealthModel model)) {
+            if (cache.Get(key) is not CachedHealthModel model) {
                 model = new CachedHealthModel() { Availability = new Availability() };
             }
 
