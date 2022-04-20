@@ -1,10 +1,10 @@
 ## https://www.appveyor.com/docs/appveyor-yml/
 
 image:
-- Visual Studio 2019
+- Visual Studio 2022
 
-services:
-- docker
+#services:
+#- docker
 
 version: 1.0.{build}
 
@@ -37,7 +37,7 @@ assembly_info:
   assembly_informational_version: '{version}'
 
 before_build:
-- appveyor-retry dotnet restore src/Cortside.HealthMonitor.sln -v Minimal
+- appveyor-retry dotnet restore src -v Minimal
 - set DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%
 - dotnet --info
 
@@ -48,9 +48,9 @@ build:
   verbosity: minimal
 
 build_script:
-- dotnet build src/Cortside.HealthMonitor.sln --configuration %Configuration% /property:Version=%APPVEYOR_BUILD_VERSION%
+- dotnet build src --configuration %Configuration% /property:Version=%APPVEYOR_BUILD_VERSION%
 - dotnet publish -r alpine-x64 -c Debug -o publish .\src\Cortside.HealthMonitor.WebApi\Cortside.HealthMonitor.WebApi.csproj
-- docker build -t cortside/healthmonitor:1.0 .
+#- docker build -t cortside/healthmonitor:1.0 .
 #- docker push cortside/healthmonitor:1.0
 
 after_build:
