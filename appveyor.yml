@@ -25,7 +25,7 @@ environment:
 
 install:
 #  - ps: $env:DOCKER_PASS | docker login --username $env:DOCKER_USER --password-stdin
-  - docker version
+#  - docker version
 
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
