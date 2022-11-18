@@ -8,4 +8,4 @@ dotnet new cortside-api-powershell --force
 dotnet new cortside-api-editorconfig --force
 
 # update dockerfile and supporting shell and powershell scripts
-#dotnet new enerbank-api-deployment --force
+#dotnet new cortside-api-deployment --force
