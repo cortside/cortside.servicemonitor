@@ -4,18 +4,16 @@ using WireMock.Server;
 
 namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.HotDocsMock {
     public class SampleWireMock {
-
-        public FluentMockServer mockServer;
+        public WireMockServer mockServer;
         public SampleWireMock() {
             if (mockServer == null) {
-                mockServer = FluentMockServer.Start();
+                mockServer = WireMockServer.Start();
             }
         }
         public SampleWireMock ConfigureBuilder() {
-
             mockServer
                 .Given(
-                    Request.Create().WithPath($"/".Split('?')[0]).UsingGet()
+                    Request.Create().WithPath("/".Split('?')[0]).UsingGet()
                     )
                 .RespondWith(
                     Response.Create()
@@ -24,7 +22,7 @@ namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.HotDocsMock {
 
             mockServer
                 .Given(
-                    Request.Create().WithPath($"/").UsingGet()
+                    Request.Create().WithPath("/").UsingGet()
                 )
                 .RespondWith(
                     Response.Create()
@@ -33,7 +31,7 @@ namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.HotDocsMock {
 
             mockServer
                 .Given(
-                    Request.Create().WithPath($"/api/health").UsingGet()
+                    Request.Create().WithPath("/api/health").UsingGet()
                 )
                 .RespondWith(
                     Response.Create()
