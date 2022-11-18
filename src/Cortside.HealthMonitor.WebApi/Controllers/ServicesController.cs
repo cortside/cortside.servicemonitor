@@ -9,7 +9,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace Cortside.HealthMonitor.WebApi.Controllers {
-
     /// <summary>
     /// Represents the shared functionality/resources of the HealthMonitor resource
     /// </summary>
