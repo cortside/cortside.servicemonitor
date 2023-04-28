@@ -60,6 +60,8 @@ COPY ./deploy/sh/startup.sh /startup.sh
 COPY ./src/sql /sql
 COPY ./update-database.ps1 /sql
 
+RUN chmod a+x /startup.sh
+
 WORKDIR /app
 COPY --from=build /app/src/out ./
 COPY --from=build /app/src/"$publishableProject"/build.json ./
