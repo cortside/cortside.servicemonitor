@@ -25,5 +25,4 @@ build_script:
 - ps: >-
     $buildNumber = $env:APPVEYOR_BUILD_NUMBER;
     $branch = $env:APPVEYOR_REPO_BRANCH;
-    cd shoppingcart-api;
     .\build-dockerimages.ps1 -branch $branch -buildCounter $buildNumber -pushImage;
