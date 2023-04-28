@@ -6,7 +6,7 @@ image:
 #services:
 #- docker
 
-version: 1.0.{build}
+version: 1.1.{build}
 
 configuration:
 - Debug
@@ -21,11 +21,13 @@ environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOCKER_USER: corts
   DOCKER_PASS:
-    secure: ATrglohIlg/NHRCeHMytmg==
+    secure: 0rxw6OrmXRqB3UuBZFbC/w==
+  SONAR_TOKEN:
+    secure: iMwieUAbbS4oTgEVtdGWUujzaBkeNjhFzsPMj8Y3c8vkjWyCN2miKlyfWA25jtBr
 
 install:
-#  - ps: $env:DOCKER_PASS | docker login --username $env:DOCKER_USER --password-stdin
-#  - docker version
+  - ps: $env:DOCKER_PASS | docker login --username $env:DOCKER_USER --password-stdin
+  - docker version
 
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
@@ -48,28 +50,12 @@ build:
   verbosity: minimal
 
 build_script:
-- dotnet build src --configuration %Configuration% /property:Version=%APPVEYOR_BUILD_VERSION%
-- dotnet publish -r alpine-x64 -c Debug -o publish .\src\Cortside.HealthMonitor.WebApi\Cortside.HealthMonitor.WebApi.csproj
-#- docker build -t cortside/healthmonitor:1.0 .
-#- docker push cortside/healthmonitor:1.0
-
-after_build:
 - ps: >-
-    #$branch = $ENV:APPVEYOR_REPO_BRANCH;
-    #$fileVersion = $env:APPVEYOR_BUILD_VERSION;
-    #if($branch -ne 'master') {
-    #    $fileVersion = "${fileVersion}-${branch}"; 
-    #}
-    
-    #dotnet pack src/cortside.common.sln --configuration $env:configuration -o ((get-location).Path + '\artifacts') /property:Version=$fileVersion 
-    
-    #gci -include *.nuspec -Recurse | %{ 
-    #    $csproj = ($_.Fullname).Replace('.nuspec','.csproj')
-    #    if((Test-Path -path $_.Fullname) -and (Test-Path -path $csproj )) { 
-    #        dotnet pack $csproj --configuration $env:configuration -o ((get-location).Path + '\artifacts') /property:Version=$fileVersion 
-    #    }
-    #}
-    
+    $buildNumber = $env:APPVEYOR_BUILD_NUMBER;
+    $branch = $env:APPVEYOR_REPO_BRANCH;
+    cd shoppingcart-api;
+    .\build-dockerimages.ps1 -branch $branch -buildCounter $buildNumber -pushImage;
+
 artifacts:
 - path: artifacts\**\*.*
 
@@ -78,20 +64,3 @@ cache:
   
 nuget:
   disable_publish_on_pr: true
-#  account_feed: true
-#  project_feed: true
-  
-test:
-  assemblies:
-    - '**\test\Cortside.Common.Test.ApplicationService.dll'
-    - '**\test\Cortside.Common.Test.Domain.dll'
-    - '**\test\Cortside.Common.Test.DomainService.dll'
-    - '**\test\Cortside.Common.Test.Web.CustomerSite.dll'
-    - '**\test\Cortside.Common.Test.DTOAssembler.dll'
-    - '**\test\Cortside.Common.Test.Web.MerchantSite.dll'
-    - '**\test\Cortside.Common.Test.Web.Common.dll'
-
-deploy:
-- provider: NuGet
-  api_key:
-    secure: w5Ze2msHkcTFwH4T9Etikd0pXBy6vjtkwCTbvmlG3yNTuSkiKgsapR0mwxD1+f1v
