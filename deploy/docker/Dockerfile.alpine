@@ -66,6 +66,9 @@ WORKDIR /app
 COPY --from=build /app/src/out ./
 COPY --from=build /app/src/"$publishableProject"/build.json ./
 
+RUN echo "{}" > /app/appsettings.local.json
+RUN chmod a+rw /app/appsettings.local.json
+
 USER user
 EXPOSE 5000/tcp
 CMD ["/startup.sh"]
