@@ -124,8 +124,8 @@ foreach ($dockerfile in $dockerFiles) {
 
 	#Docker push images to repo
 	if ($pushImage.IsPresent) {	
-		write-output "pushing ${image}:${imageversion}"
-		$dockerpushargs = "push --all-tags ${image}"
+		write-output "pushing $($config.docker.image):${imageversion}"
+		$dockerpushargs = "push --all-tags $($config.docker.image)"
 		Invoke-Exe -cmd docker -args $dockerpushargs
 	} else {
 		write-output "This is a local build and will not need to push."
