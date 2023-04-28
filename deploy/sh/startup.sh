@@ -1,6 +1,6 @@
 #!/bin/bash
 
 ifconfig
-cp $LOCAL_APPSETTINGS appsettings.local.json
+cat $LOCAL_APPSETTINGS > appsettings.local.json
 
 ./Cortside.HealthMonitor.WebApi
