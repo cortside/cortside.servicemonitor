@@ -1,5 +1,6 @@
 {
   "version": "1.1",
+  "service": "healthmonitor-api",
   "repository": {
     "name": "Cortside.HealthMonitor"
   },
@@ -20,7 +21,8 @@
   "docker": {
     "buildImage": "cortside/dotnet-sdk:6.0-alpine",
     "runtimeImage": "cortside/dotnet-runtime:6.0-alpine",
-    "image": "cortside/healthmonitor-api"
+    "image": "cortside/healthmonitor-api",
+    "executable": "Cortside.HealthMonitor.WebApi"
   },
   "build": {
     "configuration": "Debug",
