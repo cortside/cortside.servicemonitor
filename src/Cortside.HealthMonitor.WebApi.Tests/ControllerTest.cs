@@ -12,12 +12,18 @@ namespace Cortside.HealthMonitor.WebApi.Tests {
         }
 
         public void Dispose() {
-            testFixture.TearDown();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            // Cleanup
         }
 
         protected ControllerContext GetControllerContext() {
-            var controllerContext = new ControllerContext();
-            controllerContext.HttpContext = new DefaultHttpContext();
+            var controllerContext = new ControllerContext {
+                HttpContext = new DefaultHttpContext()
+            };
             return controllerContext;
         }
     }

@@ -5,17 +5,21 @@ using Cortside.Health;
 using Cortside.Health.Checks;
 using Cortside.Health.Enums;
 using Cortside.Health.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
 
 namespace Cortside.HealthMonitor.Health {
     public class CachingHealthCheck : Check {
         private readonly RestClient client;
+        private readonly JsonSerializerSettings serializerSettings;
 
-        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder, RestClient client) : base(cache, logger, recorder) {
+        public CachingHealthCheck(IMemoryCache cache, ILogger<Check> logger, IAvailabilityRecorder recorder, RestClient client, IOptions<MvcNewtonsoftJsonOptions> options) : base(cache, logger, recorder) {
             this.client = client;
+            this.serializerSettings = options.Value.SerializerSettings;
         }
 
         public override async Task<ServiceStatusModel> ExecuteAsync() {
@@ -42,7 +46,7 @@ namespace Cortside.HealthMonitor.Health {
 
             var body = response.Content.Replace(Environment.NewLine, "");
             try {
-                model.Data = JsonConvert.DeserializeObject<HealthModel>(body);
+                model.Data = JsonConvert.DeserializeObject<HealthModel>(body, serializerSettings);
             } catch (Exception ex) {
                 model.Content = response.Content;
                 model.StatusDetail = ex.Message;

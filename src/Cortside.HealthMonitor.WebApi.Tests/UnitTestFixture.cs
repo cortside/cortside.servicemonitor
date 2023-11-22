@@ -13,12 +13,12 @@ namespace Cortside.HealthMonitor.WebApi.Tests {
 
         public Mock<T> Mock<T>() where T : class {
             var mock = new Mock<T>();
-            this.mocks.Add(mock);
+            mocks.Add(mock);
             return mock;
         }
 
         public void TearDown() {
-            this.mocks.ForEach(m => m.VerifyAll());
+            mocks.ForEach(m => m.VerifyAll());
         }
     }
 }

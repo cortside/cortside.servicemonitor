@@ -12,7 +12,11 @@ namespace Cortside.HealthMonitor.WebApi {
     public static class MemoryCacheExtensions {
         private static readonly Func<MemoryCache, object> GetEntriesCollection = Delegate.CreateDelegate(
             typeof(Func<MemoryCache, object>),
-            typeof(MemoryCache).GetProperty("EntriesCollection", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true),
+            typeof(MemoryCache)
+                .GetField("_coherentState", BindingFlags.Instance | BindingFlags.NonPublic)
+                .FieldType
+                .GetProperty("EntriesCollection", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetGetMethod(true),
             throwOnBindFailure: true) as Func<MemoryCache, object>;
 
         /// <summary>
@@ -20,8 +24,15 @@ namespace Cortside.HealthMonitor.WebApi {
         /// </summary>
         /// <param name="memoryCache"></param>
         /// <returns></returns>
-        public static IEnumerable GetKeys(this IMemoryCache memoryCache) =>
-            ((IDictionary)GetEntriesCollection((MemoryCache)memoryCache)).Keys;
+        public static IEnumerable GetKeys(this IMemoryCache memoryCache) {
+            var fieldInfo = typeof(MemoryCache).GetField("_coherentState", BindingFlags.Instance | BindingFlags.NonPublic);
+            var propertyInfo = fieldInfo.FieldType.GetProperty("EntriesCollection", BindingFlags.Instance | BindingFlags.NonPublic);
+            var value = fieldInfo.GetValue(memoryCache);
+            var dict = propertyInfo.GetValue(value);
+            var cacheEntries = dict as IDictionary;
+
+            return cacheEntries.Keys;
+        }
 
         /// <summary>
         /// Get keys
