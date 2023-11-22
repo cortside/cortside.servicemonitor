@@ -19,8 +19,8 @@
     }
   },
   "docker": {
-    "buildImage": "cortside/dotnet-sdk:6.0-alpine",
-    "runtimeImage": "cortside/dotnet-runtime:6.0-alpine",
+    "buildImage": "cortside/dotnet-sdk:8.0-alpine",
+    "runtimeImage": "cortside/dotnet-runtime:8.0-alpine",
     "image": "cortside/healthmonitor-api",
     "executable": "Cortside.HealthMonitor.WebApi"
   },
@@ -33,6 +33,7 @@
     "organization": "cortside",
     "key": "cortside_cortside.healthmonitor",
     "host": "https://sonarcloud.io",
-    "token": ""
+    "token": "",
+	"propertyPrefix": "/d:"
   }
 }
