@@ -3,7 +3,7 @@ using System.Net;
 using Cortside.Health;
 using Cortside.Health.Models;
 using Cortside.HealthMonitor.Health;
-using Cortside.HealthMonitor.WebApi.Models.Responses;
+using Cortside.HealthMonitor.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;

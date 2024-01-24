@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Cortside.Health.Models;
-using Cortside.HealthMonitor.WebApi.Models.Responses;
+using Cortside.HealthMonitor.WebApi.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;

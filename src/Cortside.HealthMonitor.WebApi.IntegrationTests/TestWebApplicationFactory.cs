@@ -1,4 +1,4 @@
-using Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.HotDocsMock;
+using Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.SampleMock;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;

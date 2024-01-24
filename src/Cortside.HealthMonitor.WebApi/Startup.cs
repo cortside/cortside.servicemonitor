@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using RestSharp;
 
 namespace Cortside.HealthMonitor.WebApi {
     /// <summary>
