@@ -1,0 +1,39 @@
+{
+  "version": "1.1",
+  "service": "healthmonitor-api",
+  "repository": {
+    "name": "Cortside.HealthMonitor"
+  },
+  "database": {
+    "name": "HealthMonitor",
+    "dbContext": "DatabaseContext",
+    "dbContextProject": "src/Cortside.HealthMonitor.Data",
+    "startupProject": "src/Cortside.HealthMonitor.WebApi",
+    "triggers": {
+      "excludeTables": [
+        "__EFMigrationsHistory",
+        "AuditLog",
+        "AuditLogTransaction",
+        "Outbox"
+      ]
+    }
+  },
+  "docker": {
+    "buildImage": "cortside/dotnet-sdk:8.0-alpine",
+    "runtimeImage": "cortside/dotnet-runtime:8.0-alpine",
+    "image": "cortside/healthmonitor-api",
+    "executable": "Cortside.HealthMonitor.WebApi"
+  },
+  "build": {
+    "configuration": "Debug",
+    "publishableProject": "Cortside.HealthMonitor.WebApi",
+    "nugetfeed": "https://api.nuget.org/v3/index.json"
+  },
+  "sonar": {
+    "organization": "cortside",
+    "key": "cortside_cortside.healthmonitor",
+    "host": "https://sonarcloud.io",
+    "token": "",
+	"propertyPrefix": "/d:"
+  }
+}

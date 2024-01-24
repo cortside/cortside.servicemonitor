@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Cortside.HealthMonitor.Health;
 
-namespace Cortside.HealthMonitor.WebApi.Models.Responses {
+namespace Cortside.HealthMonitor.WebApi.Models {
     /// <summary>
     /// Settings
     /// </summary>

@@ -2,7 +2,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.HotDocsMock {
+namespace Cortside.HealthMonitor.WebApi.IntegrationTests.Helpers.SampleMock {
     public class SampleWireMock {
         public WireMockServer mockServer;
         public SampleWireMock() {

@@ -3,7 +3,7 @@ using System.Net;
 using Cortside.Health;
 using Cortside.Health.Models;
 using Cortside.HealthMonitor.Health;
-using Cortside.HealthMonitor.WebApi.Models.Responses;
+using Cortside.HealthMonitor.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -15,8 +15,7 @@ namespace Cortside.HealthMonitor.WebApi.Controllers {
     [ApiVersion("1")]
     [Produces("application/json")]
     [ApiController]
-    [Route("api/v1/services")]
-    //[Authorize]
+    [Route("api/v{version:apiVersion}/services")]
     public class ServicesController : Controller {
         private readonly ILogger logger;
         private readonly IMemoryCache cache;
